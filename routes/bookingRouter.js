@@ -14,3 +14,4 @@ bookingRouter.put("/:id", authenticateToken, updateDataStatus);
 bookingRouter.delete("/:id", authenticateToken, deleteDataBooking);
 
 module.exports = bookingRouter;
+
