@@ -9,6 +9,7 @@ const getDataUser = async (req, res) => {
   try {
     const data = await getUser();
     res.status(200).json({
+      status: 200,
       message: "Berhasil mendapat data",
       data: data,
     });
@@ -23,7 +24,8 @@ const getDataUser = async (req, res) => {
 const createDataUser = async (req, res) => {
   try {
     const data = await createUser(req.body);
-    res.status(200).json({
+    res.status(201).json({
+      status: 201,
       message: "Berhasil Membuat User",
     });
   } catch (error) {

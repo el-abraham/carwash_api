@@ -9,6 +9,7 @@ const getDataPackage = async (req, res) => {
   try {
     const data = await getPackage();
     res.status(200).json({
+      status: 200,
       message: "Berhasil mendapat data",
       data: data,
     });
@@ -23,8 +24,9 @@ const getDataPackage = async (req, res) => {
 const createDataPackage = async (req, res) => {
   try {
     const data = await createPackage(req.body);
-    res.status(200).json({
-      message: "Berhasil Mendaftar webinar",
+    res.status(201).json({
+      status: 201,
+      message: "Berhasil Membuat Data",
     });
   } catch (error) {
     console.log(error);
@@ -38,6 +40,7 @@ const updateDataPackage = async (req, res) => {
   try {
     const data = await updatePackage(req.body, req.params);
     res.status(200).json({
+      status: 200,
       message: "Berhasil Mengupdate Data",
     });
   } catch (error) {
@@ -51,6 +54,7 @@ const deleteDataPackage = async (req, res) => {
   try {
     const data = await deletePackage(req.params);
     res.status(200).json({
+      status: 200,
       message: "Berhasil Menghapus Data",
     });
   } catch (error) {

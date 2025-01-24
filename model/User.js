@@ -4,14 +4,16 @@ const jwt = require("jsonwebtoken");
 
 const getUser = async () => {
   try {
-    const [results] = await carwash.query("SELECT `id`,`name`, `email`, `role_id` FROM `users`");
+    const [results] = await carwash.query(
+      "SELECT `users`.`id`,`users`.`name`, `users`.`email`, `roles`.`role_name` FROM `users` JOIN `roles` on `roles`.`id` = `users`.`role_id` WHERE `users`.`role_id` = 1"
+    );
     return results;
   } catch (err) {
     console.log(err);
   }
 };
 
-const createUser = async ({ name, email, password, role_id }) => {
+const createUser = async ({ name, email, password, role_id = 1 }) => {
   try {
     const sqlCheckEmail = "SELECT `email` FROM `users` WHERE `email` = ?";
     const [existingUser] = await carwash.query(sqlCheckEmail, [email]);
@@ -89,7 +91,7 @@ const deleteUser = async (params) => {
 const loginUser = async ({ email, password }) => {
   try {
     const sql =
-      "SELECT `id`, `email`, `password` FROM `users` WHERE `email` = ?";
+      "SELECT `id`, `email`, `password`, `role_id` FROM `users` WHERE `email` = ?";
     const [users] = await carwash.query(sql, [email]);
 
     if (users.length === 0) {
@@ -99,17 +101,20 @@ const loginUser = async ({ email, password }) => {
     const user = users[0];
 
     const isPasswordValid = bcrypt.compareSync(password, user.password);
-  
 
     if (!isPasswordValid) {
       return { status: 401, message: "Invalid email or password" };
     }
 
-    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
 
-    return { token };
+    return { token, id: user.id, role: user.role_id };
   } catch (err) {
     console.error(err);
     return { message: "Internal Server Error" };

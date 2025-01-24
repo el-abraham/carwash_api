@@ -9,16 +9,12 @@ const getPackage = async () => {
   }
 };
 
-const createPackage = async ({ package_name, price, description }) => {
+const createPackage = async ({ package_name, price }) => {
   try {
     const sql =
-      "INSERT INTO `packages`( `package_name`, `price`, `description`) VALUES (?, ?, ?)";
+      "INSERT INTO `packages`( `package_name`, `price`) VALUES (?, ?)";
 
-    const [result] = await carwash.query(sql, [
-      package_name,
-      price,
-      description,
-    ]);
+    const [result] = await carwash.query(sql, [package_name, price]);
     return result;
   } catch (err) {
     console.log(err);
@@ -27,7 +23,7 @@ const createPackage = async ({ package_name, price, description }) => {
 const updatePackage = async (body, params) => {
   try {
     const { id } = params;
-    const { package_name, price, description } = body;
+    const { package_name, price } = body;
     const convID = parseInt(id);
 
     const fetchQuery = "SELECT * FROM `packages` WHERE `id` = ?";
@@ -39,14 +35,12 @@ const updatePackage = async (body, params) => {
 
     const updatedPackage = package_name ?? response[0].package_name;
     const updatedPrice = price ?? response[0].price;
-    const updatedDesc = description ?? response[0].description;
 
     const updateQuery =
-      "UPDATE `packages` SET `package_name` = ?, `price` = ?, `description` = ? WHERE `id` = ? ";
+      "UPDATE `packages` SET `package_name` = ?, `price` = ? WHERE `id` = ? ";
     const [result] = await carwash.query(updateQuery, [
       updatedPackage,
       updatedPrice,
-      updatedDesc,
       convID,
     ]);
 

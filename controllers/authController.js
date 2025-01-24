@@ -10,8 +10,9 @@ const login = async (req, res) => {
     }
 
     return res.status(200).json({
+      status: 200,
       message: "Berhasil Login",
-      token: data.token,
+      data: { id: data.id, role: data.role, token: data.token },
     });
   } catch (error) {
     console.log(error);
@@ -26,7 +27,8 @@ const register = async (req, res) => {
     if (data.status === 400) {
       return res.status(400).json({ message: data.message });
     }
-    return res.status(200).json({
+    return res.status(201).json({
+      status: 201,
       message: "Berhasil Mendaftar",
     });
   } catch (error) {

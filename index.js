@@ -1,13 +1,14 @@
 const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
 const cors = require("cors");
 const app = express();
 const RoleRouter = require("./routes/RoleRouter");
 const UserRouter = require("./routes/userRouter");
 const bookingRouter = require("./routes/bookingRouter");
 const packageRouter = require("./routes/packageRouter");
-const notificationRouter = require("./routes/notificationRouter");
-const authRouter = require("./routes/authRouter")
-require("dotenv").config()
+const authRouter = require("./routes/authRouter");
+require("dotenv").config();
 
 app.use(express.json());
 app.use(cors());
@@ -17,9 +18,29 @@ app.use("/role", RoleRouter);
 app.use("/user", UserRouter);
 app.use("/booking", bookingRouter);
 app.use("/package", packageRouter);
-app.use("/notification", notificationRouter);
+
+const server = http.createServer(app)
+
+const io = new Server(server, {
+  cors : {
+    origin : "*",
+    methods : ['GET']
+  }
+})
+
+io.on("connection", (socket) => {
+  console.log(`User connected: ${socket.id}`);
+
+  socket.on("booking_update", (data) => {
+    io.emit("update_bookings", data);
+  });
+
+  socket.on("disconnect", () => {
+    console.log(`User disconnected: ${socket.id}`);
+  });
+});
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log("Server Running At PORT : " + PORT);
 });
