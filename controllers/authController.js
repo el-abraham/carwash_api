@@ -23,6 +23,7 @@ const login = async (req, res) => {
 };
 const register = async (req, res) => {
   try {
+    console.log(res.body);
     const data = await createUser(req.body);
     if (data.status === 400) {
       return res.status(400).json({ message: data.message });
