@@ -13,20 +13,27 @@ require("dotenv").config();
 app.use(express.json());
 app.use(cors());
 
+app.get("/", (req, res) => {
+  return res.status(200).json({
+    status: 200,
+    message: "Berhasil",
+  });
+});
+
 app.use("/auth", authRouter);
 app.use("/role", RoleRouter);
 app.use("/user", UserRouter);
 app.use("/booking", bookingRouter);
 app.use("/package", packageRouter);
 
-const server = http.createServer(app)
+const server = http.createServer(app);
 
 const io = new Server(server, {
-  cors : {
-    origin : "*",
-    methods : ['GET']
-  }
-})
+  cors: {
+    origin: "*",
+    methods: ["GET"],
+  },
+});
 
 io.on("connection", (socket) => {
   console.log(`User connected: ${socket.id}`);
